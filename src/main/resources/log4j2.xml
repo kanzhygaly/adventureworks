@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN" monitorInterval="30">
+    <Properties>
+        <Property name="LOG_PATTERN">
+            %d{yyyy-MM-dd HH:mm:ss.SSS} %5p ${hostName} --- [%15.15t] %-40.40c{1.} : %m%n%ex
+        </Property>
+    </Properties>
+    
+    <Appenders>
+        <!-- Log to console -->
+        <Console name="ConsoleAppender" target="SYSTEM_OUT" follow="true">
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+        </Console>
+        
+        <!-- Log to file -->
+        <RollingFile name="FileAppender" fileName="logs/adventureworks.log" filePattern="logs/adventureworks-%d{yyyy-MM-dd}-%i.log">
+            <PatternLayout>
+                <Pattern>${LOG_PATTERN}</Pattern>
+            </PatternLayout>
+            <Policies>
+                <!-- Roll files over when the size reaches 10MB -->
+                <SizeBasedTriggeringPolicy size="10MB" />
+                <!-- Roll files everyday -->
+                <TimeBasedTriggeringPolicy interval="1" />
+            </Policies>
+            <!-- Maximum number of log files that will be kept -->
+            <DefaultRolloverStrategy max="10"/>
+        </RollingFile>
+        
+        <!-- Also for PROD: SMTP Appender can be added -->
+    </Appenders>
+    
+    <Loggers>
+        <!-- DEBUG level logs -->
+        <Logger name="kz.ya.contactlist" level="debug" additivity="false">
+            <AppenderRef ref="ConsoleAppender" />
+        </Logger>
+
+        <!-- INFO level logs -->
+        <Root level="info">
+            <AppenderRef ref="ConsoleAppender"/>
+            <AppenderRef ref="FileAppender"/>
+        </Root>
+    </Loggers>
+</Configuration>
