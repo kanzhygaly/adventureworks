@@ -9,6 +9,8 @@ import java.net.URI;
 import javax.validation.Valid;
 import kz.ya.adventureworks.entity.ProductReview;
 import kz.ya.adventureworks.repository.ProductReviewRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -26,13 +28,18 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 @RequestMapping("/api/reviews")
 //@CrossOrigin(origins = "http://localhost:4200", maxAge = 3600)
 public class ProductReviewController {
+    
+    private final Logger logger = LoggerFactory.getLogger(ProductReviewController.class);
 
     @Autowired
     private ProductReviewRepository productReviewRepository;
 
     @PostMapping
-    public ResponseEntity<Object> create(@Valid @RequestBody ProductReview review, BindingResult bindingResult) {
+    public ResponseEntity<Object> newProductReview(@Valid @RequestBody ProductReview review, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
+            bindingResult.getAllErrors().forEach((objError) -> {
+                logger.warn(objError.toString());
+            });
             return ResponseEntity.noContent().build();
         }
 

@@ -3,6 +3,10 @@ package kz.ya.adventureworks.entity;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import javax.persistence.*;
 import java.util.Date;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
@@ -11,42 +15,60 @@ import org.springframework.data.annotation.LastModifiedDate;
  * @author yerlana
  */
 @Entity
-@Table(name = "ProductReview")
+@Table(name = "production.productreview")
 @JsonIgnoreProperties(
-        value = {"id", "reviewDate", "rating", "modifiedDate"},
+        value = {"id", "reviewDate", "modifiedDate"},
         allowGetters = true
 )
 public class ProductReview extends AuditEntity {
 
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
-    @Column(name = "ProductReviewID")
+    @Column(name = "productreviewid")
     private Long id;
     
-    @Column(name = "ProductID", nullable = false)
+    @NotNull
+    @Column(name = "productid", nullable = false)
     private Long productid;
     
-    @Column(name = "ReviewerName", nullable = false)
+    @NotBlank
+    @Column(name = "reviewername", nullable = false, length = 50)
     private String name;
     
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "ReviewDate", nullable = false, updatable = false)
+    @Column(name = "reviewdate", nullable = false, updatable = false)
     @CreatedDate
     private Date reviewDate;
     
-    @Column(name = "EmailAddress", nullable = false, length = 50)
+    @NotBlank
+    @Column(name = "emailaddress", nullable = false, length = 50)
     private String email;
     
-    @Column(name = "Rating", nullable = false)
-    private Integer rating;
+    @NotNull
+    @Column(name = "rating", nullable = false)
+    @Min(value = 1)
+    @Max(value = 5)
+    private int rating;
     
-    @Column(name = "Comments", nullable = false, length = 3850)
+    @NotBlank
+    @Column(name = "comments", nullable = false, length = 3850)
     private String review;
     
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "ModifiedDate", nullable = false)
+    @Column(name = "modifieddate", nullable = false)
     @LastModifiedDate
     private Date modifiedDate;
+
+    public ProductReview() {
+    }
+
+    public ProductReview(String name, String email, Long productid, int rating, String review) {
+        this.name = name;
+        this.email = email;
+        this.productid = productid;
+        this.rating = rating;
+        this.review = review;
+    }
 
     public Long getId() {
         return id;
@@ -88,11 +110,11 @@ public class ProductReview extends AuditEntity {
         this.email = email;
     }
 
-    public Integer getRating() {
+    public int getRating() {
         return rating;
     }
 
-    public void setRating(Integer rating) {
+    public void setRating(int rating) {
         this.rating = rating;
     }
 
@@ -110,5 +132,10 @@ public class ProductReview extends AuditEntity {
 
     public void setModifiedDate(Date modifiedDate) {
         this.modifiedDate = modifiedDate;
+    }
+
+    @Override
+    public String toString() {
+        return "ProductReview{" + "id=" + id + ", productid=" + productid + ", name=" + name + ", reviewDate=" + reviewDate + ", email=" + email + ", rating=" + rating + ", review=" + review + ", modifiedDate=" + modifiedDate + '}';
     }
 }
