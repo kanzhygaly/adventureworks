@@ -61,7 +61,7 @@ public class ProductReviewControllerTest {
     }
 
     @Test
-    public void testNewProductReview() throws Exception {
+    public void testNewProductReviewByBean() throws Exception {
         ProductReview review = new ProductReview("Elvis Presley", "theking@elvismansion.com", 
                 3l, 4, "I really love the product and will recommend!");
         String requestJson = convertToJson(review);
@@ -72,7 +72,7 @@ public class ProductReviewControllerTest {
     }
     
     @Test
-    public void testNewProductReview2() throws Exception {
+    public void testNewProductReviewByText() throws Exception {
         String requestJson = "{"
                 + "\"name\":\"John Smith\","
                 + "\"email\":\"john@fourthcoffee.com\","

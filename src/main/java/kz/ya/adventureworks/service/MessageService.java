@@ -1,10 +1,10 @@
-package kz.ya.adventureworks.mq;
+package kz.ya.adventureworks.service;
 
 /**
  *
  * @author yerlana
  */
-public interface MessagePublisher {
+public interface MessageService {
     
     void publish(final String message);
 }

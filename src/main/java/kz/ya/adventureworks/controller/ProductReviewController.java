@@ -9,6 +9,7 @@ import java.net.URI;
 import javax.validation.Valid;
 import kz.ya.adventureworks.entity.ProductReview;
 import kz.ya.adventureworks.repository.ProductReviewRepository;
+import kz.ya.adventureworks.service.MessageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,8 @@ public class ProductReviewController {
 
     @Autowired
     private ProductReviewRepository productReviewRepository;
+    @Autowired
+    private MessageService messageService;
 
     @PostMapping
     public ResponseEntity<Object> newProductReview(@Valid @RequestBody ProductReview review, BindingResult bindingResult) {
@@ -44,6 +47,8 @@ public class ProductReviewController {
         }
 
         productReviewRepository.save(review);
+        
+        messageService.publish(review.getName());
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{reviewID}")
                 .buildAndExpand(review.getId()).toUri();
