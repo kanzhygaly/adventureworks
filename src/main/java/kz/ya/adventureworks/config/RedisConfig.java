@@ -6,10 +6,9 @@
 package kz.ya.adventureworks.config;
 
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.Executors;
 import kz.ya.adventureworks.listener.NotifyWorker;
-import kz.ya.adventureworks.service.MessageServiceImpl;
 import kz.ya.adventureworks.listener.ReviewWorker;
+import kz.ya.adventureworks.service.EmailService;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -18,9 +17,9 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
-import org.springframework.data.redis.serializer.GenericToStringSerializer;
-import kz.ya.adventureworks.service.MessageService;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 /**
  *
@@ -37,7 +36,8 @@ public class RedisConfig {
     public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory redisConnectionFactory) {
         final RedisTemplate<String, Object> template = new RedisTemplate<>();
         template.setConnectionFactory(redisConnectionFactory);
-        template.setValueSerializer(new GenericToStringSerializer<>(Object.class));
+        template.setKeySerializer(new StringRedisSerializer());
+        template.setValueSerializer(new Jackson2JsonRedisSerializer<>(Object.class));
         return template;
     }
 
@@ -54,19 +54,14 @@ public class RedisConfig {
         return container;
     }
     
-//    @Bean
-//    MessageService messageService(RedisTemplate<String, Object> redisTemplate, CountDownLatch latch) {
-//        return new MessageServiceImpl(redisTemplate, latch);
-//    }
-
     @Bean("reviewProcessListener")
     MessageListenerAdapter reviewProcessListener(ReviewWorker worker) {
         return new MessageListenerAdapter(worker);
     }
 
     @Bean("notifyProcessListener")
-    MessageListenerAdapter notifyProcessListener() {
-        return new MessageListenerAdapter(new NotifyWorker());
+    MessageListenerAdapter notifyProcessListener(EmailService emailService) {
+        return new MessageListenerAdapter(new NotifyWorker(emailService));
     }
     
     @Bean
@@ -76,7 +71,6 @@ public class RedisConfig {
 
     @Bean
     CountDownLatch latch() {
-//        System.out.println("New latch");
         return new CountDownLatch(1);
     }
 }

@@ -39,20 +39,27 @@ public class ProductReviewController {
 
     @PostMapping
     public ResponseEntity<Object> newProductReview(@Valid @RequestBody ProductReview review, BindingResult bindingResult) {
+        // validate input request
         if (bindingResult.hasErrors()) {
+            // print errors in logs
             bindingResult.getAllErrors().forEach((objError) -> {
                 logger.warn(objError.toString());
             });
+            // return 204 HTTP status code
             return ResponseEntity.noContent().build();
         }
 
+        // Save the Product Review in DB
         productReviewRepository.save(review);
-        
-        messageService.publish(review.getName());
 
+        // Put the Product Review onto a queue for processing
+        messageService.publish(review);
+
+        // built location
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{reviewID}")
                 .buildAndExpand(review.getId()).toUri();
 
+        // return 201 HTTP status code
         return ResponseEntity.created(location).build();
     }
 }

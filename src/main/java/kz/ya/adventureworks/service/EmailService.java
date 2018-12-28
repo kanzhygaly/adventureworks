@@ -6,7 +6,7 @@ import kz.ya.adventureworks.entity.ProductReview;
  *
  * @author yerlana
  */
-public interface MessageService {
+public interface EmailService {
     
-    void publish(final ProductReview review);
+    void sendNotification(ProductReview review);
 }

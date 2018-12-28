@@ -7,6 +7,9 @@ package kz.ya.adventureworks.service;
 
 import java.util.concurrent.CountDownLatch;
 import kz.ya.adventureworks.config.RedisConfig;
+import kz.ya.adventureworks.entity.ProductReview;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -18,6 +21,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class MessageServiceImpl implements MessageService {
     
+    private final Logger logger = LoggerFactory.getLogger(MessageServiceImpl.class);
     @Autowired
     private final RedisTemplate<String, Object> redisTemplate;
     @Autowired
@@ -29,14 +33,19 @@ public class MessageServiceImpl implements MessageService {
     }
     
     @Override
-    public void publish(final String message) {
-        redisTemplate.convertAndSend(RedisConfig.REVIEW_PROCESS_TOPIC, message);
+    public void publish(final ProductReview review) {
+        // put the product review onto a review process queue
+        redisTemplate.convertAndSend(RedisConfig.REVIEW_PROCESS_TOPIC, review);
+        
         try {
+            // wait for completion
             latch.await();
-            System.out.println("Latch released");
+            logger.info("Review process done on review " + review.getId());
         } catch (InterruptedException ex) {
-            System.err.println(ex.getMessage());
+            logger.error(ex.getMessage());
         }
-        redisTemplate.convertAndSend(RedisConfig.NOTIFY_PROCESS_TOPIC, message);
+        
+        // put the product review onto a notify process queue
+        redisTemplate.convertAndSend(RedisConfig.NOTIFY_PROCESS_TOPIC, review);
     }
 }
