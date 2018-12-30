@@ -26,3 +26,7 @@ COMMENT ON COLUMN Production.ProductReview.Comments IS 'Reviewer''s comments';
 ALTER TABLE Production.ProductReview ADD CONSTRAINT "PK_ProductReview_ProductReviewID" PRIMARY KEY(ProductReviewID);
 
 CLUSTER Production.ProductReview USING "PK_ProductReview_ProductReviewID";
+
+-- Add new column ReviewStatus for review process
+ALTER TABLE Production.ProductReview
+ADD COLUMN ReviewStatus varchar(10) NOT NULL;

@@ -18,7 +18,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 @Entity
 @Table(name = "production.productreview")
 @JsonIgnoreProperties(
-        value = {"id", "reviewDate", "modifiedDate"},
+        value = {"id", "reviewDate", "modifiedDate", "reviewstatus"},
         allowGetters = true
 )
 public class ProductReview extends AuditEntity {
@@ -59,6 +59,10 @@ public class ProductReview extends AuditEntity {
     @Column(name = "modifieddate", nullable = false)
     @LastModifiedDate
     private Date modifiedDate;
+
+    @Column(name = "reviewstatus", length = 10)
+    @Enumerated(EnumType.STRING)
+    private ReviewStatus reviewStatus;
 
     public ProductReview() {
     }
@@ -135,6 +139,14 @@ public class ProductReview extends AuditEntity {
         this.modifiedDate = modifiedDate;
     }
 
+    public ReviewStatus getReviewStatus() {
+        return reviewStatus;
+    }
+
+    public void setReviewStatus(ReviewStatus reviewStatus) {
+        this.reviewStatus = reviewStatus;
+    }
+
     @Override
     public int hashCode() {
         int hash = 7;
@@ -159,6 +171,16 @@ public class ProductReview extends AuditEntity {
 
     @Override
     public String toString() {
-        return "ProductReview{" + "id=" + id + ", productid=" + productid + ", name=" + name + ", reviewDate=" + reviewDate + ", email=" + email + ", rating=" + rating + ", review=" + review + ", modifiedDate=" + modifiedDate + '}';
+        return "ProductReview{" +
+                "id=" + id +
+                ", productid=" + productid +
+                ", name='" + name + '\'' +
+                ", reviewDate=" + reviewDate +
+                ", email='" + email + '\'' +
+                ", rating=" + rating +
+                ", review='" + review + '\'' +
+                ", modifiedDate=" + modifiedDate +
+                ", reviewStatus=" + reviewStatus +
+                '}';
     }
 }

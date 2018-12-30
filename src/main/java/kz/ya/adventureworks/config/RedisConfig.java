@@ -6,9 +6,12 @@
 package kz.ya.adventureworks.config;
 
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Executors;
+
 import kz.ya.adventureworks.listener.NotifyWorker;
 import kz.ya.adventureworks.listener.ReviewWorker;
 import kz.ya.adventureworks.service.EmailService;
+import kz.ya.adventureworks.service.ReviewService;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -50,7 +53,7 @@ public class RedisConfig {
         container.setConnectionFactory(redisConnectionFactory);
         container.addMessageListener(reviewProcessListener, new ChannelTopic(REVIEW_PROCESS_TOPIC));
         container.addMessageListener(notifyProcessListener, new ChannelTopic(NOTIFY_PROCESS_TOPIC));
-//        container.setTaskExecutor(Executors.newFixedThreadPool(4));
+        container.setTaskExecutor(Executors.newFixedThreadPool(4));
         return container;
     }
     
@@ -60,13 +63,13 @@ public class RedisConfig {
     }
 
     @Bean("notifyProcessListener")
-    MessageListenerAdapter notifyProcessListener(EmailService emailService) {
-        return new MessageListenerAdapter(new NotifyWorker(emailService));
+    MessageListenerAdapter notifyProcessListener(EmailService emailService, ReviewService reviewService) {
+        return new MessageListenerAdapter(new NotifyWorker(emailService, reviewService));
     }
     
     @Bean
-    ReviewWorker reviewWorker(CountDownLatch latch) {
-        return new ReviewWorker(latch);
+    ReviewWorker reviewWorker(CountDownLatch latch, ReviewService reviewService) {
+        return new ReviewWorker(latch, reviewService);
     }
 
     @Bean

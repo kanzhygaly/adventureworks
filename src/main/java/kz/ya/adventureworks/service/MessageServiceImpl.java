@@ -22,11 +22,10 @@ import org.springframework.stereotype.Service;
 public class MessageServiceImpl implements MessageService {
     
     private final Logger logger = LoggerFactory.getLogger(MessageServiceImpl.class);
-    @Autowired
     private final RedisTemplate<String, Object> redisTemplate;
-    @Autowired
     private final CountDownLatch latch;
 
+    @Autowired
     public MessageServiceImpl(RedisTemplate<String, Object> redisTemplate, CountDownLatch latch) {
         this.redisTemplate = redisTemplate;
         this.latch = latch;
@@ -40,7 +39,7 @@ public class MessageServiceImpl implements MessageService {
         try {
             // wait for completion
             latch.await();
-            logger.info("Review process done on review " + review.getId());
+            logger.info("Review process is completed on product review " + review.getId());
         } catch (InterruptedException ex) {
             logger.error(ex.getMessage());
         }
