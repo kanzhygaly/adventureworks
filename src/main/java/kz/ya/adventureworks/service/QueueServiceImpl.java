@@ -1,7 +1,6 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * Queue Service
+ * responsible for putting reviews onto a queues in right order
  */
 package kz.ya.adventureworks.service;
 
@@ -19,14 +18,14 @@ import org.springframework.stereotype.Service;
  * @author yerlana
  */
 @Service
-public class MessageServiceImpl implements MessageService {
+public class QueueServiceImpl implements QueueService {
     
-    private final Logger logger = LoggerFactory.getLogger(MessageServiceImpl.class);
+    private final Logger logger = LoggerFactory.getLogger(QueueServiceImpl.class);
     private final RedisTemplate<String, Object> redisTemplate;
     private final CountDownLatch latch;
 
     @Autowired
-    public MessageServiceImpl(RedisTemplate<String, Object> redisTemplate, CountDownLatch latch) {
+    public QueueServiceImpl(RedisTemplate<String, Object> redisTemplate, CountDownLatch latch) {
         this.redisTemplate = redisTemplate;
         this.latch = latch;
     }

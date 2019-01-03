@@ -6,7 +6,7 @@ import kz.ya.adventureworks.entity.ProductReview;
  *
  * @author yerlana
  */
-public interface ReviewService {
+public interface ProductReviewService {
 
     boolean isApproved(long productReviewId);
 

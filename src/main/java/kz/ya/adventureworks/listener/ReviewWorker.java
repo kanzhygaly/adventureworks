@@ -1,7 +1,7 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * Worker Layer #1 - Review processor
+ * Worker consumes a review from the queue and scans for inappropriate language.
+ * If a message contains a bad word, the message is marked as inappropriate.
  */
 package kz.ya.adventureworks.listener;
 
@@ -9,12 +9,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
 import kz.ya.adventureworks.entity.ProductReview;
-import kz.ya.adventureworks.service.ReviewService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.MessageListener;
+import kz.ya.adventureworks.service.ProductReviewService;
 
 /**
  *
@@ -25,10 +25,10 @@ public class ReviewWorker implements MessageListener {
     private final Logger logger = LoggerFactory.getLogger(ReviewWorker.class);
     private final String[] BAD_WORDS = {"fee", "nee", "cruul", "leent"};
     private final CountDownLatch latch;
-    private final ReviewService reviewService;
+    private final ProductReviewService reviewService;
 
     @Autowired
-    public ReviewWorker(CountDownLatch latch, ReviewService reviewService) {
+    public ReviewWorker(CountDownLatch latch, ProductReviewService reviewService) {
         this.latch = latch;
         this.reviewService = reviewService;
     }

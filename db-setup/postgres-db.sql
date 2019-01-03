@@ -13,6 +13,10 @@ CREATE TABLE Production.ProductReview(
     ModifiedDate TIMESTAMP NOT NULL CONSTRAINT "DF_ProductReview_ModifiedDate" DEFAULT (NOW()),
     CONSTRAINT "CK_ProductReview_Rating" CHECK (Rating BETWEEN 1 AND 5)
 );
+
+-- Add new column ReviewStatus for review process
+ALTER TABLE Production.ProductReview ADD COLUMN ReviewStatus varchar(10);
+COMMENT ON COLUMN Production.ProductReview.ReviewStatus IS 'Status of Product Review: NEW(newly created), APPROVED(approved for publication), DECLINED(contains bad words).';
   
 COMMENT ON TABLE Production.ProductReview IS 'Customer reviews of products they have purchased.';
 COMMENT ON COLUMN Production.ProductReview.ProductReviewID IS 'Primary key for ProductReview records.';
@@ -26,7 +30,3 @@ COMMENT ON COLUMN Production.ProductReview.Comments IS 'Reviewer''s comments';
 ALTER TABLE Production.ProductReview ADD CONSTRAINT "PK_ProductReview_ProductReviewID" PRIMARY KEY(ProductReviewID);
 
 CLUSTER Production.ProductReview USING "PK_ProductReview_ProductReviewID";
-
--- Add new column ReviewStatus for review process
-ALTER TABLE Production.ProductReview
-ADD COLUMN ReviewStatus varchar(10) NOT NULL;

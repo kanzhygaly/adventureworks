@@ -1,7 +1,5 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * Redis Configuration Class
  */
 package kz.ya.adventureworks.config;
 
@@ -11,7 +9,6 @@ import java.util.concurrent.Executors;
 import kz.ya.adventureworks.listener.NotifyWorker;
 import kz.ya.adventureworks.listener.ReviewWorker;
 import kz.ya.adventureworks.service.EmailService;
-import kz.ya.adventureworks.service.ReviewService;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -23,6 +20,7 @@ import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
+import kz.ya.adventureworks.service.ProductReviewService;
 
 /**
  *
@@ -63,12 +61,12 @@ public class RedisConfig {
     }
 
     @Bean("notifyProcessListener")
-    MessageListenerAdapter notifyProcessListener(EmailService emailService, ReviewService reviewService) {
+    MessageListenerAdapter notifyProcessListener(EmailService emailService, ProductReviewService reviewService) {
         return new MessageListenerAdapter(new NotifyWorker(emailService, reviewService));
     }
     
     @Bean
-    ReviewWorker reviewWorker(CountDownLatch latch, ReviewService reviewService) {
+    ReviewWorker reviewWorker(CountDownLatch latch, ProductReviewService reviewService) {
         return new ReviewWorker(latch, reviewService);
     }
 

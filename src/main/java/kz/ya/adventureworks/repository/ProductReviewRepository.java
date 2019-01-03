@@ -1,3 +1,6 @@
+/**
+ * Repository for Product Review entity
+ */
 package kz.ya.adventureworks.repository;
 
 import kz.ya.adventureworks.entity.ProductReview;

@@ -1,3 +1,6 @@
+/**
+ * Main class
+ */
 package kz.ya.adventureworks;
 
 import org.springframework.boot.SpringApplication;

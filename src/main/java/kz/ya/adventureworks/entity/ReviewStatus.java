@@ -1,3 +1,6 @@
+/**
+ * Enum class for review status field
+ */
 package kz.ya.adventureworks.entity;
 
 /**

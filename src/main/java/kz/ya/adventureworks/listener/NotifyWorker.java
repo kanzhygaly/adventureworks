@@ -1,7 +1,7 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * Worker Layer #2 - Notifications
+ * Worker consumes a review from the queue and checks if it was approved and
+ * published. If yes then it sends notification to the reviewer via email.
  */
 package kz.ya.adventureworks.listener;
 
@@ -9,12 +9,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import kz.ya.adventureworks.entity.ProductReview;
 import kz.ya.adventureworks.service.EmailService;
-import kz.ya.adventureworks.service.ReviewService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.MessageListener;
+import kz.ya.adventureworks.service.ProductReviewService;
 
 /**
  *
@@ -24,10 +24,10 @@ public class NotifyWorker implements MessageListener {
 
     private final Logger logger = LoggerFactory.getLogger(NotifyWorker.class);
     private final EmailService emailService;
-    private final ReviewService reviewService;
+    private final ProductReviewService reviewService;
     
     @Autowired
-    public NotifyWorker(EmailService emailService, ReviewService reviewService) {
+    public NotifyWorker(EmailService emailService, ProductReviewService reviewService) {
         this.emailService = emailService;
         this.reviewService = reviewService;
     }

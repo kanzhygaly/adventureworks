@@ -1,15 +1,11 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * Rest Controller Class for Product Review
  */
 package kz.ya.adventureworks.controller;
 
 import java.net.URI;
 import javax.validation.Valid;
 import kz.ya.adventureworks.entity.ProductReview;
-import kz.ya.adventureworks.service.MessageService;
-import kz.ya.adventureworks.service.ReviewService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import kz.ya.adventureworks.service.QueueService;
+import kz.ya.adventureworks.service.ProductReviewService;
 
 /**
  *
@@ -32,11 +30,11 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 public class ProductReviewController {
     
     private final Logger logger = LoggerFactory.getLogger(ProductReviewController.class);
-    private final ReviewService reviewService;
-    private final MessageService messageService;
+    private final ProductReviewService reviewService;
+    private final QueueService messageService;
 
     @Autowired
-    public ProductReviewController(ReviewService reviewService, MessageService messageService) {
+    public ProductReviewController(ProductReviewService reviewService, QueueService messageService) {
         this.reviewService = reviewService;
         this.messageService = messageService;
     }

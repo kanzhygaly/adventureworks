@@ -1,3 +1,7 @@
+/**
+ * Product Review entity class
+ * Also used as DTO for Rest requests
+ */
 package kz.ya.adventureworks.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
