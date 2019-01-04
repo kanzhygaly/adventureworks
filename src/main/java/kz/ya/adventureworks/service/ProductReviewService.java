@@ -8,11 +8,11 @@ import kz.ya.adventureworks.entity.ProductReview;
  */
 public interface ProductReviewService {
 
-    boolean isApproved(long productReviewId);
+    boolean isApproved(long reviewId);
 
-    void newProductReview(ProductReview productReview);
+    ProductReview newProductReview(ProductReview review);
 
-    void approveProductReview(ProductReview productReview);
+    ProductReview approveProductReview(ProductReview review);
 
-    void declineProductReview(ProductReview productReview);
+    ProductReview declineProductReview(ProductReview review);
 }

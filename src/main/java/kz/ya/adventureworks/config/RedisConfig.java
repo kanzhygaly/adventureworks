@@ -21,6 +21,8 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import kz.ya.adventureworks.service.ProductReviewService;
+import kz.ya.adventureworks.service.QueueService;
+import kz.ya.adventureworks.service.QueueServiceImpl;
 
 /**
  *
@@ -29,7 +31,7 @@ import kz.ya.adventureworks.service.ProductReviewService;
 @Configuration
 @ComponentScan("kz.ya.adventureworks")
 public class RedisConfig {
-    
+
     public static final String REVIEW_PROCESS_TOPIC = "pubsub:to-review";
     public static final String NOTIFY_PROCESS_TOPIC = "pubsub:to-notify";
 
@@ -43,10 +45,10 @@ public class RedisConfig {
     }
 
     @Bean
-    RedisMessageListenerContainer redisContainer(RedisConnectionFactory redisConnectionFactory, 
+    RedisMessageListenerContainer redisContainer(RedisConnectionFactory redisConnectionFactory,
             @Qualifier("reviewProcessListener") MessageListenerAdapter reviewProcessListener,
             @Qualifier("notifyProcessListener") MessageListenerAdapter notifyProcessListener) {
-        
+
         final RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(redisConnectionFactory);
         container.addMessageListener(reviewProcessListener, new ChannelTopic(REVIEW_PROCESS_TOPIC));
@@ -54,24 +56,34 @@ public class RedisConfig {
         container.setTaskExecutor(Executors.newFixedThreadPool(4));
         return container;
     }
-    
+
     @Bean("reviewProcessListener")
     MessageListenerAdapter reviewProcessListener(ReviewWorker worker) {
         return new MessageListenerAdapter(worker);
     }
 
     @Bean("notifyProcessListener")
-    MessageListenerAdapter notifyProcessListener(EmailService emailService, ProductReviewService reviewService) {
-        return new MessageListenerAdapter(new NotifyWorker(emailService, reviewService));
+    MessageListenerAdapter notifyProcessListener(NotifyWorker worker) {
+        return new MessageListenerAdapter(worker);
     }
-    
+
     @Bean
-    ReviewWorker reviewWorker(CountDownLatch latch, ProductReviewService reviewService) {
-        return new ReviewWorker(latch, reviewService);
+    ReviewWorker reviewWorker(CountDownLatch latch, ProductReviewService productReviewService) {
+        return new ReviewWorker(latch, productReviewService);
+    }
+
+    @Bean
+    NotifyWorker notifyWorker(EmailService emailService, ProductReviewService productReviewService) {
+        return new NotifyWorker(emailService, productReviewService);
     }
 
     @Bean
     CountDownLatch latch() {
         return new CountDownLatch(1);
+    }
+
+    @Bean
+    QueueService queueService(RedisTemplate<String, Object> redisTemplate, CountDownLatch latch) {
+        return new QueueServiceImpl(redisTemplate, latch);
     }
 }

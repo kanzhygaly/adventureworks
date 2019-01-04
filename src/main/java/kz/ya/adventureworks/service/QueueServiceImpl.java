@@ -19,7 +19,7 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class QueueServiceImpl implements QueueService {
-    
+
     private final Logger logger = LoggerFactory.getLogger(QueueServiceImpl.class);
     private final RedisTemplate<String, Object> redisTemplate;
     private final CountDownLatch latch;
@@ -29,20 +29,19 @@ public class QueueServiceImpl implements QueueService {
         this.redisTemplate = redisTemplate;
         this.latch = latch;
     }
-    
+
     @Override
     public void publish(final ProductReview review) {
         // put the product review onto a review process queue
         redisTemplate.convertAndSend(RedisConfig.REVIEW_PROCESS_TOPIC, review);
-        
+
         try {
             // wait for completion
             latch.await();
-            logger.info("Review process is completed on product review " + review.getId());
         } catch (InterruptedException ex) {
             logger.error(ex.getMessage());
         }
-        
+
         // put the product review onto a notify process queue
         redisTemplate.convertAndSend(RedisConfig.NOTIFY_PROCESS_TOPIC, review);
     }

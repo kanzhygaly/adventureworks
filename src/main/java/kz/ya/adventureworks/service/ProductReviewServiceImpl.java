@@ -6,6 +6,7 @@ package kz.ya.adventureworks.service;
 
 import kz.ya.adventureworks.entity.ProductReview;
 import kz.ya.adventureworks.entity.ReviewStatus;
+import kz.ya.adventureworks.exception.ProductReviewNotFoundException;
 import kz.ya.adventureworks.repository.ProductReviewRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,55 +18,56 @@ import org.springframework.stereotype.Service;
 @Service
 public class ProductReviewServiceImpl implements ProductReviewService {
 
-    private final ProductReviewRepository productReviewRepository;
-
     @Autowired
-    public ProductReviewServiceImpl(ProductReviewRepository productReviewRepository) {
-        this.productReviewRepository = productReviewRepository;
-    }
+    private ProductReviewRepository productReviewRepository;
 
     /**
      * Checks if Product Review was approved
      * 
-     * @param productReviewId review ID
+     * @param reviewId review ID
      * @return TRUE if review is approved, else FALSE
      */
     @Override
-    public boolean isApproved(long productReviewId) {
-        ProductReview productReview = productReviewRepository.getOne(productReviewId);
+    public boolean isApproved(long reviewId) {
+        ProductReview productReview = productReviewRepository.findById(reviewId)
+                .orElseThrow(() -> new ProductReviewNotFoundException(
+                        "Product Review not found with id " + reviewId));
         return productReview.getReviewStatus().equals(ReviewStatus.APPROVED);
     }
 
     /**
      * Create new Product Review
      * 
-     * @param productReview Product Review data
+     * @param review Product Review data
+     * @return created Product Review object
      */
     @Override
-    public void newProductReview(ProductReview productReview) {
-        productReview.setReviewStatus(ReviewStatus.NEW);
-        productReviewRepository.save(productReview);
+    public ProductReview newProductReview(ProductReview review) {
+        review.setReviewStatus(ReviewStatus.NEW);
+        return productReviewRepository.save(review);
     }
 
     /**
      * Approve Product Review for publication
      * 
-     * @param productReview Product Review data
+     * @param review Product Review data
+     * @return update Product Review object
      */
     @Override
-    public void approveProductReview(ProductReview productReview) {
-        productReview.setReviewStatus(ReviewStatus.APPROVED);
-        productReviewRepository.save(productReview);
+    public ProductReview approveProductReview(ProductReview review) {
+        review.setReviewStatus(ReviewStatus.APPROVED);
+        return productReviewRepository.save(review);
     }
 
     /**
      * Decline Product Review from publication
      * 
-     * @param productReview Product Review data
+     * @param review Product Review data
+     * @return update Product Review object
      */
     @Override
-    public void declineProductReview(ProductReview productReview) {
-        productReview.setReviewStatus(ReviewStatus.DECLINED);
-        productReviewRepository.save(productReview);
+    public ProductReview declineProductReview(ProductReview review) {
+        review.setReviewStatus(ReviewStatus.DECLINED);
+        return productReviewRepository.save(review);
     }
 }

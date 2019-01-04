@@ -25,12 +25,12 @@ public class ReviewWorker implements MessageListener {
     private final Logger logger = LoggerFactory.getLogger(ReviewWorker.class);
     private final String[] BAD_WORDS = {"fee", "nee", "cruul", "leent"};
     private final CountDownLatch latch;
-    private final ProductReviewService reviewService;
+    private final ProductReviewService productReviewService;
 
     @Autowired
-    public ReviewWorker(CountDownLatch latch, ProductReviewService reviewService) {
+    public ReviewWorker(CountDownLatch latch, ProductReviewService productReviewService) {
         this.latch = latch;
-        this.reviewService = reviewService;
+        this.productReviewService = productReviewService;
     }
 
     @Override
@@ -59,12 +59,12 @@ public class ReviewWorker implements MessageListener {
                 logger.info("The product review contains bad words in text.");
 
                 // mark as inappropriate
-                reviewService.declineProductReview(review);
+                productReviewService.declineProductReview(review);
 
                 logger.info("ReviewWorker: archive " + review);
             } else {
                 // approve and publish
-                reviewService.approveProductReview(review);
+                productReviewService.approveProductReview(review);
 
                 logger.info("ReviewWorker: publish " + review);
             }

@@ -30,14 +30,10 @@ import kz.ya.adventureworks.service.ProductReviewService;
 public class ProductReviewController {
     
     private final Logger logger = LoggerFactory.getLogger(ProductReviewController.class);
-    private final ProductReviewService reviewService;
-    private final QueueService messageService;
-
     @Autowired
-    public ProductReviewController(ProductReviewService reviewService, QueueService messageService) {
-        this.reviewService = reviewService;
-        this.messageService = messageService;
-    }
+    private ProductReviewService productReviewService;
+    @Autowired
+    private QueueService queueService;
 
     @PostMapping
     public ResponseEntity<Object> newProductReview(@Valid @RequestBody ProductReview review, BindingResult bindingResult) {
@@ -50,10 +46,10 @@ public class ProductReviewController {
         }
 
         // Save the Product Review in DB
-        reviewService.newProductReview(review);
-
+        review = productReviewService.newProductReview(review);
+        
         // Put the Product Review onto a queue for processing
-        messageService.publish(review);
+        queueService.publish(review);
 
         // built location
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{reviewID}")

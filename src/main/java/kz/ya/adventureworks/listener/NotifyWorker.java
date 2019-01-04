@@ -24,12 +24,12 @@ public class NotifyWorker implements MessageListener {
 
     private final Logger logger = LoggerFactory.getLogger(NotifyWorker.class);
     private final EmailService emailService;
-    private final ProductReviewService reviewService;
+    private final ProductReviewService productReviewService;
     
     @Autowired
-    public NotifyWorker(EmailService emailService, ProductReviewService reviewService) {
+    public NotifyWorker(EmailService emailService, ProductReviewService productReviewService) {
         this.emailService = emailService;
-        this.reviewService = reviewService;
+        this.productReviewService = productReviewService;
     }
 
     @Override
@@ -45,7 +45,7 @@ public class NotifyWorker implements MessageListener {
 
         if (review != null) {
             // check whether product review is approved
-            boolean isReviewApproved = reviewService.isApproved(review.getId());
+            boolean isReviewApproved = productReviewService.isApproved(review.getId());
 
             if (isReviewApproved) {
                 logger.info("NotifyWorker: " + review);

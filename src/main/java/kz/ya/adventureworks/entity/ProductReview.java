@@ -20,7 +20,7 @@ import org.springframework.data.annotation.LastModifiedDate;
  * @author yerlana
  */
 @Entity
-@Table(name = "production.productreview")
+@Table(name = "productreview", schema="production")
 @JsonIgnoreProperties(
         value = {"id", "reviewDate", "modifiedDate", "reviewstatus"},
         allowGetters = true
@@ -30,11 +30,11 @@ public class ProductReview extends AuditEntity {
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Column(name = "productreviewid")
-    private Long id;
+    private Integer id;
     
     @NotNull
     @Column(name = "productid", nullable = false)
-    private Long productid;
+    private Integer productid;
     
     @NotBlank
     @Column(name = "reviewername", nullable = false, length = 50)
@@ -71,7 +71,7 @@ public class ProductReview extends AuditEntity {
     public ProductReview() {
     }
 
-    public ProductReview(String name, String email, Long productid, int rating, String review) {
+    public ProductReview(String name, String email, Integer productid, int rating, String review) {
         this.name = name;
         this.email = email;
         this.productid = productid;
@@ -79,19 +79,19 @@ public class ProductReview extends AuditEntity {
         this.review = review;
     }
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
-    public Long getProductid() {
+    public Integer getProductid() {
         return productid;
     }
 
-    public void setProductid(Long productid) {
+    public void setProductid(Integer productid) {
         this.productid = productid;
     }
 
@@ -154,7 +154,7 @@ public class ProductReview extends AuditEntity {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 73 * hash + Objects.hashCode(this.id);
+        hash = 47 * hash + Objects.hashCode(this.id);
         return hash;
     }
 
