@@ -1,5 +1,7 @@
 package kz.ya.adventureworks.controller;
 
+import kz.ya.adventureworks.AdventureworksApplication;
+import kz.ya.adventureworks.dto.ProductReviewDTO;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -18,11 +20,10 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.Arrays;
-import kz.ya.adventureworks.AdventureworksApplication;
-import kz.ya.adventureworks.entity.ProductReview;
 
 /**
  * @author yerlana
@@ -43,7 +44,7 @@ public class ProductReviewControllerTest {
 
     @Autowired
     void setConverters(HttpMessageConverter<?>[] converters) {
-        this.mappingJackson2HttpMessageConverter = Arrays.asList(converters).stream()
+        this.mappingJackson2HttpMessageConverter = Arrays.stream(converters)
                 .filter(hmc -> hmc instanceof MappingJackson2HttpMessageConverter)
                 .findAny().orElse(null);
 
@@ -52,17 +53,17 @@ public class ProductReviewControllerTest {
     }
 
     @Before
-    public void setup() throws Exception {
+    public void setup() {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext).build();
     }
 
     @After
-    public void tearDown() throws IOException {
+    public void tearDown() {
     }
 
     @Test
-    public void testNewProductReviewByBean() throws Exception {
-        ProductReview review = new ProductReview("Elvis Presley", "theking@elvismansion.com", 
+    public void testNewProductReviewByDTO() throws Exception {
+        ProductReviewDTO review = new ProductReviewDTO("Elvis Presley", "theking@elvismansion.com",
                 3, 4, "I really love the product and will recommend!");
         String requestJson = convertToJson(review);
 
@@ -87,14 +88,14 @@ public class ProductReviewControllerTest {
 
 //    @Test
     public void testNewProductReviewFailed() throws Exception {
-        String requestJson = convertToJson(new ProductReview());
+        String requestJson = convertToJson(new ProductReviewDTO());
 
         this.mockMvc.perform(MockMvcRequestBuilders.post("/api/reviews")
                 .contentType(this.contentType).content(requestJson))
                 .andExpect(MockMvcResultMatchers.status().isNoContent());
     }
 
-    protected String convertToJson(Object o) throws IOException {
+    private String convertToJson(Object o) throws IOException {
         MockHttpOutputMessage mockHttpOutputMessage = new MockHttpOutputMessage();
         this.mappingJackson2HttpMessageConverter.write(o, MediaType.APPLICATION_JSON, mockHttpOutputMessage);
         return mockHttpOutputMessage.getBodyAsString();

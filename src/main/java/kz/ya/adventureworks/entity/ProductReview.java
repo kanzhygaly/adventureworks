@@ -1,19 +1,19 @@
-/**
- * Product Review entity class
- * Also used as DTO for Rest requests
+/*
+  Product Review entity class
+  Also used as DTO for Rest requests
  */
 package kz.ya.adventureworks.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+
 import javax.persistence.*;
-import java.util.Date;
-import java.util.Objects;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
+import java.util.Date;
+import java.util.Objects;
 
 /**
  *
@@ -21,10 +21,7 @@ import org.springframework.data.annotation.LastModifiedDate;
  */
 @Entity
 @Table(name = "productreview", schema="production")
-@JsonIgnoreProperties(
-        value = {"id", "reviewDate", "modifiedDate", "reviewstatus"},
-        allowGetters = true
-)
+//@JsonIgnoreProperties(value = {"reviewDate", "modifiedDate"}, allowGetters = true)
 public class ProductReview extends AuditEntity {
 
     @Id

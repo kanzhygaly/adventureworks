@@ -1,5 +1,6 @@
 package kz.ya.adventureworks.service;
 
+import kz.ya.adventureworks.dto.ProductReviewDTO;
 import kz.ya.adventureworks.entity.ProductReview;
 
 /**
@@ -8,9 +9,9 @@ import kz.ya.adventureworks.entity.ProductReview;
  */
 public interface ProductReviewService {
 
-    boolean isApproved(long reviewId);
+    boolean isApproved(Integer reviewId);
 
-    ProductReview newProductReview(ProductReview review);
+    ProductReview newProductReview(ProductReviewDTO dto);
 
     ProductReview approveProductReview(ProductReview review);
 

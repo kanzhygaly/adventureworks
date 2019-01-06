@@ -1,10 +1,12 @@
-/**
- * Rest Controller Class for Product Review
+/*
+  Rest Controller Class for Product Review
  */
 package kz.ya.adventureworks.controller;
 
 import java.net.URI;
 import javax.validation.Valid;
+
+import kz.ya.adventureworks.dto.ProductReviewDTO;
 import kz.ya.adventureworks.entity.ProductReview;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,7 +38,7 @@ public class ProductReviewController {
     private QueueService queueService;
 
     @PostMapping
-    public ResponseEntity<Object> newProductReview(@Valid @RequestBody ProductReview review, BindingResult bindingResult) {
+    public ResponseEntity<Object> newProductReview(@Valid @RequestBody ProductReviewDTO dto, BindingResult bindingResult) {
         // validate input request
         if (bindingResult.hasErrors()) {
             // print errors in logs
@@ -46,14 +48,14 @@ public class ProductReviewController {
         }
 
         // Save the Product Review in DB
-        review = productReviewService.newProductReview(review);
+        ProductReview productReview = productReviewService.newProductReview(dto);
         
         // Put the Product Review onto a queue for processing
-        queueService.publish(review);
+        queueService.publish(productReview);
 
         // built location
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{reviewID}")
-                .buildAndExpand(review.getId()).toUri();
+                .buildAndExpand(productReview.getId()).toUri();
 
         // return 201 HTTP status code
         return ResponseEntity.created(location).build();
