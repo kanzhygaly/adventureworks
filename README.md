@@ -31,14 +31,15 @@ CREATE USER adv_user WITH password 'adv_pass';
 # Create Database
 CREATE DATABASE adv_works OWNER adv_user;
 
-# Change owner of schema "public"
+# Change owner of schema "public" and grant access
+GRANT ALL PRIVILEGES ON DATABASE adv_works TO adv_user;
 ALTER SCHEMA public OWNER TO adv_user;
 
 # Logout from PostgreSQL server
 \q
 
 # Create Database Data
-psql -U adv_user -d adv_works -a -f db-setup/postgres-db.sql
+psql -U adv_user -d adv_works -a -f docker-entrypoint-initdb.d/postgres-db.sql
 ```
 
 ## Build and Run
