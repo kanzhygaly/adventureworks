@@ -12,9 +12,11 @@
  - JPA/Hibernate
  - PostgreSQL
  - Spring Rest
- - Redis Pub/Sub
- - JUnit 4
+ - Spring Security
+ - Spring Test
+ - Redis Pub/Sub 
  - Log4j2
+ - Swagger 2 
  
 ## Prerequisites
  - Install PostgreSQL (port: 5432)
@@ -31,15 +33,14 @@ CREATE USER adv_user WITH password 'adv_pass';
 # Create Database
 CREATE DATABASE adv_works OWNER adv_user;
 
-# Change owner of schema "public" and grant access
+# Grant privileges
 GRANT ALL PRIVILEGES ON DATABASE adv_works TO adv_user;
-ALTER SCHEMA public OWNER TO adv_user;
 
 # Logout from PostgreSQL server
 \q
 
 # Create Database Data
-psql -U adv_user -d adv_works -a -f docker-entrypoint-initdb.d/postgres-db.sql
+psql -U adv_user -d adv_works -a -f postgres-db/init.sql
 ```
 
 ## Build and Run
@@ -57,3 +58,8 @@ Run the app:
 # Run the application (Java)
 java -jar target/adventureworks-1.0.jar
 ```
+
+## Paths
+Swagger UI endpoint: http://localhost:8080/swagger-ui.html
+Swagger docs endpoint: http://localhost:8080/v2/api-docs
+Logs available under /logs folder

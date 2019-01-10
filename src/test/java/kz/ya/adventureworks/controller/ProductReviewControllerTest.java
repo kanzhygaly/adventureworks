@@ -24,6 +24,14 @@ import org.springframework.web.context.WebApplicationContext;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.Arrays;
+import javax.servlet.Filter;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockHttpSession;
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders;
+import org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers;
+import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers;
+import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
 /**
  * @author yerlana
@@ -41,6 +49,8 @@ public class ProductReviewControllerTest {
 
     @Autowired
     private WebApplicationContext webApplicationContext;
+    @Autowired
+    private Filter springSecurityFilterChain;
 
     @Autowired
     void setConverters(HttpMessageConverter<?>[] converters) {
@@ -54,11 +64,51 @@ public class ProductReviewControllerTest {
 
     @Before
     public void setup() {
-        this.mockMvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext).build();
+        final MockHttpServletRequestBuilder defaultRequestBuilder = MockMvcRequestBuilders.get("/dummy-path");
+        this.mockMvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext)
+                .defaultRequest(defaultRequestBuilder)
+                .alwaysDo(result -> setSessionBackOnRequestBuilder(defaultRequestBuilder, result.getRequest()))
+                .apply(SecurityMockMvcConfigurers.springSecurity(springSecurityFilterChain))
+                .build();
+
+        // login
+        try {
+            performLogin("advUser", "advPass");
+        } catch (Exception ex) {
+            System.err.println(ex);
+        }
     }
 
     @After
     public void tearDown() {
+        // logout
+        try {
+            performLogout();
+        } catch (Exception ex) {
+            System.err.println(ex);
+        }
+    }
+
+    public void performLogin(final String username, final String password) throws Exception {
+        final ResultActions resultActions = this.mockMvc.perform(
+                SecurityMockMvcRequestBuilders.formLogin().user(username).password(password));
+
+        resultActions.andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(SecurityMockMvcResultMatchers.authenticated());
+    }
+
+    public void performLogout() throws Exception {
+        final ResultActions resultActions = this.mockMvc.perform(SessionLogoutRequestBuilder.sessionLogout());
+
+        resultActions.andExpect(MockMvcResultMatchers.status().isNoContent())
+                .andExpect(SecurityMockMvcResultMatchers.unauthenticated());
+    }
+
+    private MockHttpServletRequest setSessionBackOnRequestBuilder(
+            final MockHttpServletRequestBuilder requestBuilder, final MockHttpServletRequest request) {
+
+        requestBuilder.session((MockHttpSession) request.getSession());
+        return request;
     }
 
     @Test
@@ -67,11 +117,11 @@ public class ProductReviewControllerTest {
                 3, 4, "I really love the product and will recommend!");
         String requestJson = convertToJson(review);
 
-        this.mockMvc.perform(MockMvcRequestBuilders.post("/api/reviews")
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/reviews")
                 .contentType(this.contentType).content(requestJson))
-                .andExpect(MockMvcResultMatchers.status().isCreated());
+                .andExpect(MockMvcResultMatchers.status().isOk());
     }
-    
+
 //    @Test
     public void testNewProductReviewByText() throws Exception {
         String requestJson = "{"
@@ -81,16 +131,16 @@ public class ProductReviewControllerTest {
                 + "\"rating\":5,"
                 + "\"review\":\"I really love the product and will recommend!\"}";
 
-        this.mockMvc.perform(MockMvcRequestBuilders.post("/api/reviews")
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/reviews")
                 .contentType(this.contentType).content(requestJson))
-                .andExpect(MockMvcResultMatchers.status().isCreated());
+                .andExpect(MockMvcResultMatchers.status().isOk());
     }
 
-//    @Test
+    @Test
     public void testNewProductReviewFailed() throws Exception {
         String requestJson = convertToJson(new ProductReviewDTO());
 
-        this.mockMvc.perform(MockMvcRequestBuilders.post("/api/reviews")
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/reviews")
                 .contentType(this.contentType).content(requestJson))
                 .andExpect(MockMvcResultMatchers.status().isNoContent());
     }

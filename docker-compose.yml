@@ -8,13 +8,15 @@ services:
     - mypostgres
     - myredis
   mypostgres:
-    image: postgres
+    image: postgres    
     ports:
     - "5432:5432"
     environment:
-    - POSTGRES_PASSWORD=adv_pass
-    - POSTGRES_USER=adv_user
-    - POSTGRES_DB=adv_works
+    - ADV_PASSWORD=adv_pass
+    - ADV_USER=adv_user
+    - ADV_DB=adv_works
+    - POSTGRES_USER=postgres
+    build: ./postgres-db
   myredis:
     image: "redis:alpine"
     ports:

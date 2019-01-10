@@ -1,0 +1,56 @@
+{
+	"info": {
+		"_postman_id": "6f7d00c6-2994-44db-9a03-20ef2d6e1b3c",
+		"name": "adv_works",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "http://localhost:8080/api/reviews",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "advPass",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "advUser",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"John Smith\",\n    \"email\": \"john@fourthcoffee.com\",\n    \"productid\": 701,\n    \"rating\": 3,\n    \"review\": \"Not the prettiest one!\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/reviews",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"reviews"
+					]
+				},
+				"description": "New product review request"
+			},
+			"response": []
+		}
+	]
+}

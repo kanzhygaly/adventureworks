@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  *
  * @author yerlana
  */
+// 404 Not Found HTTP status code
 @ResponseStatus(HttpStatus.NOT_FOUND)
 public class ProductReviewNotFoundException extends RuntimeException {
 
