@@ -22,7 +22,7 @@
 ```
 # From project directory run the following commands
 
-# Build the project, skip tests
+# Build a project and skip tests (you don't have your local env)
 ./mvnw clean install -DskipTests
 
 # Create and start all the services
@@ -73,5 +73,39 @@ java -jar target/adventureworks-1.0.jar
 
 ## Paths
 Swagger UI endpoint: http://localhost:8080/swagger-ui.html
+
 Swagger docs endpoint: http://localhost:8080/v2/api-docs
+
 Logs available under /logs folder
+
+## Test
+The project has its own unit tests that are run during build
+```
+# Run all the unit test classes
+./mvnw test
+ ```
+
+You can test sample product review request using (Postman)[https://www.getpostman.com/]
+by importing and running adv_works.postman_collection.json into it.
+
+Or you can use CURL
+ - Submit a product review via HTTP
+ ```
+ curl -X POST http://localhost:8080/api/reviews \
+	-d username=advUser -d password=advPass \
+	-H 'Content-Type: application/json' \
+	-d '{
+	"name": "John Smith",
+	"email": "john@fourthcoffee.com",
+	"productid": 701,
+	"rating": 3,
+	"review": "Not the prettiest one!"
+	}'
+ ```
+ - API HTTP response
+ ```
+ {
+	"success": true,
+	"reviewID": [id integer]
+ }
+ ```
