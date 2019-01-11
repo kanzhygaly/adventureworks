@@ -91,15 +91,19 @@ by importing and running adv_works.postman_collection.json into it.
 3. Or you can use CURL
 Submit a product review via HTTP
 ```
+# Authenticate and save the cookie
+curl -i -X POST -d username=advUser -d password=advPass -c cookies.txt http://localhost:8080/login
+
+# Make a request
 curl -X POST http://localhost:8080/api/reviews \
-	-d username=advUser -d password=advPass \
-	-H 'Content-Type: application/json' \
-	-d '{
-	"name": "John Smith",
-	"email": "john@fourthcoffee.com",
-	"productid": 701,
-	"rating": 3,
-	"review": "Not the prettiest one!"
+  -b cookies.txt \
+  -H 'Content-Type: application/json' \  
+  -d '{
+    "name": "John Smith",
+    "email": "john@fourthcoffee.com",
+    "productid": 701,
+    "rating": 3,
+    "review": "Not the prettiest one!"
 }'
 ```
 and get API HTTP response
