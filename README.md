@@ -79,19 +79,19 @@ Swagger docs endpoint: http://localhost:8080/v2/api-docs
 Logs available under /logs folder
 
 ## Test
-The project has its own unit tests that are run during build
+1. The project has its own unit tests that are run during build
 ```
 # Run all the unit test classes
 ./mvnw test
  ```
 
-You can test sample product review request using (Postman)[https://www.getpostman.com/]
+2. You can test sample product review request using [Postman](https://www.getpostman.com/)
 by importing and running adv_works.postman_collection.json into it.
 
-Or you can use CURL
- - Submit a product review via HTTP
- ```
- curl -X POST http://localhost:8080/api/reviews \
+3. Or you can use CURL
+Submit a product review via HTTP
+```
+curl -X POST http://localhost:8080/api/reviews \
 	-d username=advUser -d password=advPass \
 	-H 'Content-Type: application/json' \
 	-d '{
@@ -100,12 +100,12 @@ Or you can use CURL
 	"productid": 701,
 	"rating": 3,
 	"review": "Not the prettiest one!"
-	}'
- ```
- - API HTTP response
- ```
- {
+}'
+```
+and get API HTTP response
+```
+{
 	"success": true,
 	"reviewID": [id integer]
- }
- ```
+}
+```
