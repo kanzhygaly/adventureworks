@@ -16,13 +16,25 @@
  - Spring Test
  - Redis Pub/Sub 
  - Log4j2
- - Swagger 2 
+ - Swagger 2
  
-## Prerequisites
+## Docker
+```
+# From project directory run the following commands
+
+# Build the project, skip tests
+./mvnw clean install -DskipTests
+
+# Create and start all the services
+docker-compose up
+```
+
+## Local Environment
+### Prerequisites
  - Install PostgreSQL (port: 5432)
  - Install Redis (port: 6379)
  
-## Database Setup
+### Database Setup
 ```
 # Open command line from project directory and Login to PostgreSQL server
 psql -U postgres -h localhost
@@ -43,7 +55,7 @@ GRANT ALL PRIVILEGES ON DATABASE adv_works TO adv_user;
 psql -U adv_user -d adv_works -a -f postgres-db/init.sql
 ```
 
-## Build and Run
+### Build and Run
 Build the project:
 ```
 # From project directory run
