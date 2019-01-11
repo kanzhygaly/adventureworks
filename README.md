@@ -80,36 +80,36 @@ Logs available under /logs folder
 
 ## Test
 1. The project has its own unit tests that are run during build
-```
-# Run all the unit test classes
-./mvnw test
- ```
+	```
+	# Run all the unit test classes
+	./mvnw test
+	 ```
 
-2. You can test sample product review request using [Postman](https://www.getpostman.com/)
-by importing and running adv_works.postman_collection.json into it.
+2. You can test sample product review request using [Postman](https://www.getpostman.com/) by importing and running adv_works.postman_collection.json into it.
 
 3. Or you can use CURL
-Submit a product review via HTTP
-```
-# Authenticate and save the cookie
-curl -i -X POST -d username=advUser -d password=advPass -c cookies.txt http://localhost:8080/login
 
-# Make a request
-curl -X POST http://localhost:8080/api/reviews \
-  -b cookies.txt \
-  -H 'Content-Type: application/json' \  
-  -d '{
-    "name": "John Smith",
-    "email": "john@fourthcoffee.com",
-    "productid": 701,
-    "rating": 3,
-    "review": "Not the prettiest one!"
-}'
-```
-and get API HTTP response
-```
-{
-	"success": true,
-	"reviewID": [id integer]
-}
-```
+	Submit a product review via HTTP
+	```
+	# Authenticate and save the cookie
+	curl -i -X POST -d username=advUser -d password=advPass -c cookies.txt http://localhost:8080/login
+
+	# Submit request
+	curl -X POST http://localhost:8080/api/reviews \
+	  -b cookies.txt \
+	  -H 'Content-Type: application/json' \  
+	  -d '{
+		"name": "John Smith",
+		"email": "john@fourthcoffee.com",
+		"productid": 701,
+		"rating": 3,
+		"review": "Not the prettiest one!"
+	}'
+	```
+	and get API HTTP response
+	```
+	{
+		"success": true,
+		"reviewID": [id integer]
+	}
+	```
